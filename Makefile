@@ -6,7 +6,7 @@
 #    By: vkuusela <vkuusela@student.hive.fi>        +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/12/20 12:42:28 by vkuusela          #+#    #+#              #
-#    Updated: 2024/12/20 12:50:25 by vkuusela         ###   ########.fr        #
+#    Updated: 2025/01/23 13:23:37 by vkuusela         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -23,9 +23,11 @@ LIBFT			= libft/libft.a
 
 		### SOURCE ###
 
-SOURCES			= 
+SOURCES			= pipex.c \
+				  inpur_parsing.c \
+				  error_handling.c
 
-HEADERS			= 
+HEADERS			= pipex.h
 
 OBJECTS			= $(SOURCES:.c=.o)
 
