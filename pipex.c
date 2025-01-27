@@ -12,17 +12,35 @@
 
 #include "pipex.h"
 
-int	main(int argc, char **argv)
+static void	*ft_exec(int *files, char **command);
+
+int	main(int argc, char **argv, char **envp)
 {
-	// init pipex
-	// check args
-	// parse cmds
-	// parse args
-	// while cmds, exec
+	int		*files;
+	char	***commands;
+
+	if (argc < 5)
+		return (EXIT_FAILURE);
+	files = ft_check_files(argc, argv);
+	if (!files)
+		return (EXIT_FAILURE);
+	commands = ft_parse_commands(argc, argv, envp);
+	if (!commands)
+	{
+		if (files[0] != 1)
+			close(files[0]);
+		close(files[1]);
+		return (EXIT_FAILURE);
+	}
+	while (commands)
+	{
+		ft_exec(files, *commands);
+		commands++;
+	}
 	// cleanup
 }
 
-void	ft_exec(void)
+static void	*ft_exec(int *files, char **command)
 {
 	// pipe
 	// fork

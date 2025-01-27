@@ -12,34 +12,41 @@
 
 #include "pipex.h"
 
-static int	ft_check_infile(char *file);
+static int	ft_open_file(char *file, int mode);
 
-int	ft_check_args(int argc, char **argv, t_data *data)
+int	*ft_check_files(int argc, char **argv)
 {
-	int	index;
-	int	ret;
+	int	*files;
 
-	ret = ft_check_infile(argv[1]);
-	if (!ret)
-		return (0);
-	// if argv[argc - 1] != outfile
-	// BOOM
-	index = 2;
-	data->infile = open(argv[1], O_RDONLY);
-	data->outfile = open(argv[argc - 1], O_WRONLY);
-	while (argv[index] && index < (argc - 1))
+	files[0] = ft_open_file(argv[1], 0);
+	if (files[0] < 0)
+		return (NULL);
+	files[1] = ft_open_file(argv[argc - 2], 1);
+	if (files[1] < 0)
 	{
-		if (argv[index] != cmd)
-			// BOOM
+		if (files[0] != 1)
+			close(files[0]);
+		return (NULL);
 	}
+	return (files);
 }
 
-static int	ft_check_infile(char *file)
+static int	ft_open_file(char *file, int mode)
 {
-	if (ft_strncmp(file, "<<", 2) == 0)
-		return (2);
-	else if (access(file, R_OK) < 0)
-		return (0);
-	else
+	if (mode == 0 && ft_strncmp(file, "<<", 2) == 0)
 		return (1);
+	else if (mode == 0 && access(file, R_OK) != -1)
+		return (open(file, O_RDONLY));
+	else if (mode == 1 && access(file, W_OK) != -1)
+		return (open(file, O_WRONLY | O_CREAT, 0644));
+	else
+		return (-1);
+}
+
+char	***ft_parse_commands(int argc, char **argv, char **envp)
+{
+	char	***commands;
+
+
+	return (commands);
 }

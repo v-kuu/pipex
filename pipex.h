@@ -22,6 +22,8 @@ typedef struct s_data
 	int	outfile;
 }			t_data;
 
+int		*ft_check_files(int argc, char **argv);
+char	***ft_parse_commands(int argc, char **argv, char **envp);
 void	ft_exit(const char *string, t_data *data);
 void	ft_clear_data(t_data *data);
 
