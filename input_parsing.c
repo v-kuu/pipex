@@ -43,10 +43,19 @@ static int	ft_open_file(char *file, int mode)
 		return (-1);
 }
 
-char	***ft_parse_commands(int argc, char **argv, char **envp)
+t_cmd	*ft_parse_commands(int count, char **args, char **envp, t_cmd *commands)
 {
-	char	***commands;
+	char	*pwd;
+	char	*path;
+	int		index;
 
-
+	index = -1;
+	while (envp[++index])
+	{
+		if (ft_strncmp(envp[index], "PWD=", 4) == 0)
+			pwd = &envp[index][4];
+		if (ft_strncmp(envp[index], "PATH=", 5) == 0)
+			path = &envp[index][5];
+	}
 	return (commands);
 }

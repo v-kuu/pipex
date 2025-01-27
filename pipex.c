@@ -12,19 +12,22 @@
 
 #include "pipex.h"
 
-static void	*ft_exec(int *files, char **command);
+static void	*ft_exec(int *files, t_cmd command);
 
 int	main(int argc, char **argv, char **envp)
 {
 	int		*files;
-	char	***commands;
+	t_cmd	*commands;
 
 	if (argc < 5)
 		return (EXIT_FAILURE);
 	files = ft_check_files(argc, argv);
 	if (!files)
 		return (EXIT_FAILURE);
-	commands = ft_parse_commands(argc, argv, envp);
+	commands = ft_calloc((argc - 3), sizeof(t_cmd));
+	if (!commands)
+		return (EXIT_FAILURE);
+	commands = ft_parse_commands((argc - 3), &argv[2], envp, commands);
 	if (!commands)
 	{
 		if (files[0] != 1)
@@ -37,10 +40,9 @@ int	main(int argc, char **argv, char **envp)
 		ft_exec(files, *commands);
 		commands++;
 	}
-	// cleanup
 }
 
-static void	*ft_exec(int *files, char **command)
+static void	*ft_exec(int *files, t_cmd command)
 {
 	// pipe
 	// fork
