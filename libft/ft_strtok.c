@@ -30,7 +30,7 @@ char	*ft_strtok(char *str, const char *delim)
 	while (ptr[++index])
 	{
 		if (ft_scanner(ptr[index], delim))
-			break;
+			break ;
 	}
 	token = ptr;
 	token[index] = '\0';
