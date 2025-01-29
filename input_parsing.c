@@ -12,8 +12,9 @@
 
 #include "pipex.h"
 
-static int		ft_open_file(char *file, int mode);
-static t_cmd	ft_test_path(char **path_arr, char **args, int index);
+static int	ft_open_file(char *file, int mode);
+static void	ft_create_cmd(t_cmd *cmd, char **paths, char **args, int index);
+static char	*ft_test_path(char **paths, char *name);
 
 int	*ft_check_files(int argc, char **argv)
 {
@@ -46,32 +47,49 @@ static int	ft_open_file(char *file, int mode)
 
 t_cmd	*ft_parse_commands(int count, char **args, char **envp, t_cmd *commands)
 {
-	char	*pwd;
 	char	*path;
-	char	**path_arr;
+	char	**paths;
 	int		index;
 
 	index = -1;
 	while (envp[++index])
 	{
-		if (ft_strncmp(envp[index], "PWD=", 4) == 0)
-			pwd = &envp[index][4];
 		if (ft_strncmp(envp[index], "PATH=", 5) == 0)
 			path = &envp[index][5];
 	}
-	path_arr = ft_split(path, ':');
-	if (!path_arr)
-		return (NULL);
+	paths = ft_split(path, ':');
+	if (!paths)
+		return (ft_free_commands(commands, count));
 	index = -1;
 	while (++index < count)
 	{
-		commands[index] = ft_test_path(path_arr, args, index);
+		ft_create_cmd(&commands[index], paths, args, index);
+		if (!commands[index].path)
+			return (ft_free_commands(commands, count));
 	}
-	ft_free_str_arr(path_arr);
+	ft_free_str_arr(paths);
 	return (commands);
 }
 
-static t_cmd	ft_test_path(char **path_arr, char **args, int index)
+static void	ft_create_cmd(t_cmd *cmd, char **paths, char **args, int index)
 {
+	cmd->args = ft_split(args[index], ' ');
+	if (!cmd->args)
+		return ;
+	cmd->path = ft_test_path(paths, cmd->args[0]);
+}
 
+static char	*ft_test_path(char **paths, char *name)
+{
+	char	*path;
+
+	while (*paths)
+	{
+		path = ft_glue_path(*paths, name);
+		if (access(path, X_OK) == 0)
+			break;
+		ft_free((void **)&path);
+		paths++;
+	}
+	return (path);
 }

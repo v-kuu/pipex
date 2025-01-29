@@ -24,5 +24,7 @@ typedef struct s_cmd
 
 int		*ft_check_files(int argc, char **argv);
 t_cmd	*ft_parse_commands(int count, char **args, char **envp, t_cmd *commands);
+void	*ft_free_commands(t_cmd *commands, int size);
+char	*ft_glue_path(char *path, char *name);
 
 #endif

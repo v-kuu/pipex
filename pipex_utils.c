@@ -1,28 +1,30 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   error_handling.c                                   :+:      :+:    :+:   */
+/*   pipex_utils.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: vkuusela <vkuusela@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/01/23 13:23:16 by vkuusela          #+#    #+#             */
-/*   Updated: 2025/01/23 13:24:56 by vkuusela         ###   ########.fr       */
+/*   Created: 2025/01/29 12:03:00 by vkuusela          #+#    #+#             */
+/*   Updated: 2025/01/29 12:10:41 by vkuusela         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
 
-void	*ft_free_commands(t_cmd *commands, int size)
+char	*ft_glue_path(char *path, char *name)
 {
-	int	index;
+	int		path_len;
+	int		name_len;
+	char	*full;
 
-	index = 0;
-	while (index < size)
-	{
-		free(commands[index].path);
-		ft_free_str_arr(commands[index].args);
-		index++;
-	}
-	free(commands);
-	return (NULL);
+	path_len = ft_strlen(path);
+	name_len = ft_strlen(name);
+	full = ft_calloc((path_len + name_len + 2), sizeof(char));
+	if (!full)
+		return (NULL);
+	ft_strlcat(full, path, path_len + 1);
+	ft_strlcat(full, "/", 2);
+	ft_strlcat(full, name, name_len + 1);
+	return (full);
 }
