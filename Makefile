@@ -24,7 +24,7 @@ LIBFT			= libft/libft.a
 		### SOURCE ###
 
 SOURCES			= pipex.c \
-				  inpur_parsing.c \
+				  input_parsing.c \
 				  error_handling.c \
 				  pipex_utils.c
 

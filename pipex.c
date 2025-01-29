@@ -34,6 +34,8 @@ int	main(int argc, char **argv, char **envp)
 		return (EXIT_FAILURE);
 	}
 	ft_exec(files, commands, envp, (argc -3));
+	ft_free_commands(commands, (argc - 3));
+	exit(EXIT_SUCCESS);
 }
 
 static void	ft_exec(int files[2], t_cmd *commands, char **envp, int count)
@@ -45,23 +47,22 @@ static void	ft_exec(int files[2], t_cmd *commands, char **envp, int count)
 	fildes[0] = files[0];
 	fildes[1] = 1;
 	index = -1;
+	if (pipe(fildes) < 0)
+		ft_exit("Pipe failure", commands, count);
 	while (++index < count)
 	{
-		pipe(fildes);
 		pid = fork();
 		if (pid == -1)
 			ft_exit("Fork failure", commands, count);
 		if (pid == 0)
 		{
-			dup2(fildes[0], STDIN_FILENO);
+			dup2(STDIN_FILENO, fildes[0]);
 			execve(commands[index].path, commands[index].args, envp);
+			ft_exit("Execve failure", commands, count);
 		}
-		else
-		{
-			wait(NULL);
-			fildes[0] = 0;
-			if (index == count - 1)
-				fildes[1] = files[1];
-		}
+		wait(NULL);
+		fildes[0] = 0;
+		if (index == count - 1)
+			fildes[1] = files[1];
 	}
 }

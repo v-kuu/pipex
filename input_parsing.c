@@ -86,7 +86,7 @@ static char	*ft_test_path(char **paths, char *name)
 	{
 		path = ft_glue_path(*paths, name);
 		if (access(path, X_OK) == 0)
-			break;
+			break ;
 		ft_free((void **)&path);
 		paths++;
 	}
