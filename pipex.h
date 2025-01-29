@@ -15,6 +15,7 @@
 
 # include "libft/libft.h"
 # include <fcntl.h>
+# include <sys/wait.h>
 
 typedef struct s_cmd
 {
@@ -22,9 +23,10 @@ typedef struct s_cmd
 	char	**args;
 }			t_cmd;
 
-int		*ft_check_files(int argc, char **argv);
-t_cmd	*ft_parse_commands(int count, char **args, char **envp, t_cmd *commands);
+void	ft_check_files(int argc, char **argv, int files[2]);
+t_cmd	*ft_parse_cmds(int count, char **args, char **envp, t_cmd *commands);
 void	*ft_free_commands(t_cmd *commands, int size);
 char	*ft_glue_path(char *path, char *name);
+void	ft_exit(const char *string, t_cmd *commands, int size);
 
 #endif

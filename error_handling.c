@@ -12,6 +12,13 @@
 
 #include "pipex.h"
 
+void	ft_exit(const char *string, t_cmd *commands, int size)
+{
+	ft_free_commands(commands, size);
+	perror(string);
+	exit(EXIT_FAILURE);
+}
+
 void	*ft_free_commands(t_cmd *commands, int size)
 {
 	int	index;

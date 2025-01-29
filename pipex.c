@@ -12,22 +12,20 @@
 
 #include "pipex.h"
 
-static void	*ft_exec(int *files, t_cmd command);
+static void	ft_exec(int files[2], t_cmd *commands, char **envp, int count);
 
 int	main(int argc, char **argv, char **envp)
 {
-	int		*files;
+	int		files[2];
 	t_cmd	*commands;
 
 	if (argc < 5)
 		return (EXIT_FAILURE);
-	files = ft_check_files(argc, argv);
-	if (!files)
-		return (EXIT_FAILURE);
+	ft_check_files(argc, argv, files);
 	commands = ft_calloc((argc - 3), sizeof(t_cmd));
 	if (!commands)
 		return (EXIT_FAILURE);
-	commands = ft_parse_commands((argc - 3), &argv[2], envp, commands);
+	commands = ft_parse_cmds((argc - 3), &argv[2], envp, commands);
 	if (!commands)
 	{
 		if (files[0] != 1)
@@ -35,24 +33,35 @@ int	main(int argc, char **argv, char **envp)
 		close(files[1]);
 		return (EXIT_FAILURE);
 	}
-	while (commands)
-	{
-		ft_exec(files, *commands);
-		commands++;
-	}
+	ft_exec(files, commands, envp, (argc -3));
 }
 
-static void	*ft_exec(int *files, t_cmd command)
+static void	ft_exec(int files[2], t_cmd *commands, char **envp, int count)
 {
-	// pipe
-	// fork
-	// if (child)
-	// {
-	//		dup2
-	//		execve
-	//	}
-	//	else
-	//	{
-	//		close
-	//	}
+	int		index;
+	int		fildes[2];
+	pid_t	pid;
+
+	fildes[0] = files[0];
+	fildes[1] = 1;
+	index = -1;
+	while (++index < count)
+	{
+		pipe(fildes);
+		pid = fork();
+		if (pid == -1)
+			ft_exit("Fork failure", commands, count);
+		if (pid == 0)
+		{
+			dup2(fildes[0], STDIN_FILENO);
+			execve(commands[index].path, commands[index].args, envp);
+		}
+		else
+		{
+			wait(NULL);
+			fildes[0] = 0;
+			if (index == count - 1)
+				fildes[1] = files[1];
+		}
+	}
 }

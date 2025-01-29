@@ -16,21 +16,20 @@ static int	ft_open_file(char *file, int mode);
 static void	ft_create_cmd(t_cmd *cmd, char **paths, char **args, int index);
 static char	*ft_test_path(char **paths, char *name);
 
-int	*ft_check_files(int argc, char **argv)
+void	ft_check_files(int argc, char **argv, int files[2])
 {
-	int	*files;
-
 	files[0] = ft_open_file(argv[1], 0);
 	if (files[0] < 0)
-		return (NULL);
+		perror("First file oopsie");
 	files[1] = ft_open_file(argv[argc - 2], 1);
 	if (files[1] < 0)
 	{
+		perror("Second file oopsie");
 		if (files[0] != 1)
 			close(files[0]);
-		return (NULL);
 	}
-	return (files);
+	if (files[0] < 0 || files[1] < 0)
+		exit(EXIT_FAILURE);
 }
 
 static int	ft_open_file(char *file, int mode)
@@ -45,7 +44,7 @@ static int	ft_open_file(char *file, int mode)
 		return (-1);
 }
 
-t_cmd	*ft_parse_commands(int count, char **args, char **envp, t_cmd *commands)
+t_cmd	*ft_parse_cmds(int count, char **args, char **envp, t_cmd *commands)
 {
 	char	*path;
 	char	**paths;
