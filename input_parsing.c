@@ -21,7 +21,7 @@ void	ft_check_files(int argc, char **argv, int files[2])
 	files[0] = ft_open_file(argv[1], 0);
 	if (files[0] < 0)
 		perror("First file oopsie");
-	files[1] = ft_open_file(argv[argc - 2], 1);
+	files[1] = ft_open_file(argv[argc - 1], 1);
 	if (files[1] < 0)
 	{
 		perror("Second file oopsie");
@@ -54,7 +54,10 @@ t_cmd	*ft_parse_cmds(int count, char **args, char **envp, t_cmd *commands)
 	while (envp[++index])
 	{
 		if (ft_strncmp(envp[index], "PATH=", 5) == 0)
+		{
 			path = &envp[index][5];
+			break ;
+		}
 	}
 	paths = ft_split(path, ':');
 	if (!paths)

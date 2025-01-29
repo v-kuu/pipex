@@ -16,15 +16,17 @@ char	*ft_glue_path(char *path, char *name)
 {
 	int		path_len;
 	int		name_len;
+	int		full_len;
 	char	*full;
 
 	path_len = ft_strlen(path);
 	name_len = ft_strlen(name);
-	full = ft_calloc((path_len + name_len + 2), sizeof(char));
+	full_len = path_len + name_len + 2;
+	full = ft_calloc(full_len, sizeof(char));
 	if (!full)
 		return (NULL);
-	ft_strlcat(full, path, path_len + 1);
-	ft_strlcat(full, "/", 2);
-	ft_strlcat(full, name, name_len + 1);
+	ft_strlcat(full, path, full_len);
+	ft_strlcat(full, "/", full_len);
+	ft_strlcat(full, name, full_len);
 	return (full);
 }
