@@ -12,23 +12,23 @@
 
 #include "pipex.h"
 
-void	ft_exit(const char *string, t_cmd *commands, int size)
+void	ft_exit(const char *string, t_cmd *commands)
 {
-	ft_free_commands(commands, size);
+	ft_free_commands(commands);
 	perror(string);
 	exit(EXIT_FAILURE);
 }
 
-void	*ft_free_commands(t_cmd *commands, int size)
+void	*ft_free_commands(t_cmd *commands)
 {
-	int	index;
+	t_cmd	*eraser;
 
-	index = 0;
-	while (index < size)
+	eraser = commands;
+	while (eraser)
 	{
-		free(commands[index].path);
-		ft_free_str_arr(commands[index].args);
-		index++;
+		free(eraser->path);
+		ft_free_str_arr(eraser->args);
+		eraser++;
 	}
 	free(commands);
 	return (NULL);

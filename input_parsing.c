@@ -34,7 +34,7 @@ void	ft_check_files(int argc, char **argv, int files[2])
 
 static int	ft_open_file(char *file, int mode)
 {
-	if (mode == 0 && ft_strncmp(file, "<<", 2) == 0)
+	if (mode == 0 && ft_strncmp(file, "here_doc", 8) == 0)
 		return (1);
 	else if (mode == 0 && access(file, R_OK) != -1)
 		return (open(file, O_RDONLY));
@@ -61,13 +61,13 @@ t_cmd	*ft_parse_cmds(int count, char **args, char **envp, t_cmd *commands)
 	}
 	paths = ft_split(path, ':');
 	if (!paths)
-		return (ft_free_commands(commands, count));
+		return (ft_free_commands(commands));
 	index = -1;
 	while (++index < count)
 	{
 		ft_create_cmd(&commands[index], paths, args, index);
 		if (!commands[index].path)
-			return (ft_free_commands(commands, count));
+			return (ft_free_commands(commands));
 	}
 	ft_free_str_arr(paths);
 	return (commands);
