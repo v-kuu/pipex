@@ -84,7 +84,7 @@ static void	ft_read_lines(char *delim)
 
 	while (1)
 	{
-		line = get_next_line(1);
+		line = get_next_line(STDIN_FILENO);
 		if (!line)
 		{
 			perror("Heredoc failure");
@@ -95,7 +95,7 @@ static void	ft_read_lines(char *delim)
 			free(line);
 			exit(EXIT_SUCCESS);
 		}
-		write(1, line, ft_strlen(line));
+		write(STDOUT_FILENO, line, ft_strlen(line));
 		free(line);
 	}
 }
