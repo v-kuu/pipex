@@ -15,8 +15,6 @@
 static int	ft_open(char *file, int mode);
 static int	ft_read_heredoc(char *delim);
 static void	ft_read_lines(char *delim);
-static void	ft_create_cmd(t_cmd *cmd, char **paths, char **args, int index);
-static char	*ft_test_path(char **paths, char *name);
 
 void	ft_open_files(char *infile, char *outfile, int files[2], bool heredoc)
 {
@@ -98,56 +96,4 @@ static void	ft_read_lines(char *delim)
 		write(STDOUT_FILENO, line, ft_strlen(line));
 		free(line);
 	}
-}
-
-t_cmd	*ft_parse_cmds(int count, char **args, char **envp, t_cmd *commands)
-{
-	char	*path;
-	char	**paths;
-	int		index;
-
-	index = -1;
-	while (envp[++index])
-	{
-		if (ft_strncmp(envp[index], "PATH=", 5) == 0)
-		{
-			path = &envp[index][5];
-			break ;
-		}
-	}
-	paths = ft_split(path, ':');
-	if (!paths)
-		return (ft_free_commands(commands));
-	index = -1;
-	while (++index < count)
-	{
-		ft_create_cmd(&commands[index], paths, args, index);
-		if (!commands[index].path)
-			return (ft_free_commands(commands));
-	}
-	ft_free_str_arr(paths);
-	return (commands);
-}
-
-static void	ft_create_cmd(t_cmd *cmd, char **paths, char **args, int index)
-{
-	cmd->args = ft_split(args[index], ' ');
-	if (!cmd->args)
-		return ;
-	cmd->path = ft_test_path(paths, cmd->args[0]);
-}
-
-static char	*ft_test_path(char **paths, char *name)
-{
-	char	*path;
-
-	while (*paths)
-	{
-		path = ft_glue_path(*paths, name);
-		if (access(path, X_OK) == 0)
-			break ;
-		ft_free((void **)&path);
-		paths++;
-	}
-	return (path);
 }

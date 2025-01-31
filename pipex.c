@@ -58,5 +58,6 @@ static void	ft_pass_to_child(char *arg, char **envp)
 
 static void	ft_exec(char *arg, char **envp)
 {
-	
+	// parse commands
+	// execve
 }
