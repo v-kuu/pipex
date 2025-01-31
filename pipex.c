@@ -27,6 +27,7 @@ int	main(int argc, char **argv, char **envp)
 	{
 		index = 3;
 		ft_open_files(argv[2], argv[argc - 1], files, true);
+		dup2(files[0], STDIN_FILENO);
 	}
 	else
 	{

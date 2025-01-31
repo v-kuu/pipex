@@ -17,13 +17,17 @@
 # include <fcntl.h>
 # include <sys/wait.h>
 
+# define APPEND 0
+# define READ 1
+# define TRUNC 2
+
 typedef struct s_cmd
 {
 	char	*path;
 	char	**args;
 }			t_cmd;
 
-void	ft_open_files(char *infile, char *outfile, int files[2], bool here_doc);
+void	ft_open_files(char *infile, char *outfile, int files[2], bool heredoc);
 void	ft_check_files(int argc, char **argv, int files[2]);
 t_cmd	*ft_parse_cmds(int count, char **args, char **envp, t_cmd *commands);
 void	*ft_free_commands(t_cmd *commands);

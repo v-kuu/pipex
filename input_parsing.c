@@ -12,36 +12,92 @@
 
 #include "pipex.h"
 
-static int	ft_open_file(char *file, int mode);
+static int	ft_open(char *file, int mode);
+static int	ft_read_heredoc(char *delim);
+static void	ft_read_lines(char *delim);
 static void	ft_create_cmd(t_cmd *cmd, char **paths, char **args, int index);
 static char	*ft_test_path(char **paths, char *name);
 
-void	ft_check_files(int argc, char **argv, int files[2])
+void	ft_open_files(char *infile, char *outfile, int files[2], bool heredoc)
 {
-	files[0] = ft_open_file(argv[1], 0);
-	if (files[0] < 0)
-		perror("First file oopsie");
-	files[1] = ft_open_file(argv[argc - 1], 1);
-	if (files[1] < 0)
+	if (heredoc == true)
+		files[0] = ft_read_heredoc(infile);
+	else
+		files[0] = ft_open(infile, READ);
+	if (files[0] == -1)
+		perror("Infile error");
+	if (heredoc == true)
+		files[1] = ft_open(outfile, APPEND);
+	else
+		files[1] = ft_open(outfile, TRUNC);
+	if (files[1] == -1)
 	{
-		perror("Second file oopsie");
-		if (files[0] != 1)
-			close(files[0]);
+		perror("Outfile error");
+		if (files[0] != -1)
+		close(files[0]);
 	}
-	if (files[0] < 0 || files[1] < 0)
+	if (files[1] == -1 || files[0] == -1)
 		exit(EXIT_FAILURE);
 }
 
-static int	ft_open_file(char *file, int mode)
+static int	ft_open(char *file, int mode)
 {
-	if (mode == 0 && ft_strncmp(file, "here_doc", 8) == 0)
-		return (1);
-	else if (mode == 0 && access(file, R_OK) != -1)
+	if (mode == READ && access(file, R_OK | O_CLOEXEC) != -1)
 		return (open(file, O_RDONLY));
-	else if (mode == 1 && access(file, W_OK) != -1)
-		return (open(file, O_WRONLY | O_CREAT, 0644));
+	else if (mode == TRUNC && access(file, W_OK) != -1)
+		return (open(file, O_WRONLY | O_CREAT | O_TRUNC, 0644));
+	else if (mode == APPEND && access(file, W_OK) != -1)
+		return (open(file, O_WRONLY | O_CREAT | O_APPEND, 0644));
 	else
 		return (-1);
+}
+
+static int	ft_read_heredoc(char *delim)
+{
+	int		heredoc[2];
+	pid_t	pid;
+
+	if (pipe(heredoc) == -1)
+		return (-1);
+	pid = fork();
+	if (pid == -1)
+	{
+		close(heredoc[0]);
+		close(heredoc[1]);
+		return (-1);
+	}
+	if (pid == 0)
+	{
+		close(heredoc[0]);
+		dup2(heredoc[1], STDOUT_FILENO);
+		close(heredoc[1]);
+		ft_read_lines(delim);
+	}
+	close(heredoc[1]);
+	wait(NULL);
+	return (heredoc[0]);
+}
+
+static void	ft_read_lines(char *delim)
+{
+	char	*line;
+
+	while (1)
+	{
+		line = get_next_line(1);
+		if (!line)
+		{
+			perror("Heredoc failure");
+			exit(EXIT_FAILURE);
+		}
+		if (ft_strncmp(line, delim, ft_strlen(delim)) == 0)
+		{
+			free(line);
+			exit(EXIT_SUCCESS);
+		}
+		write(1, line, ft_strlen(line));
+		free(line);
+	}
 }
 
 t_cmd	*ft_parse_cmds(int count, char **args, char **envp, t_cmd *commands)
