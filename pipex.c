@@ -12,6 +12,8 @@
 
 #include "pipex.h"
 
+static void	ft_pass_to_child(char *arg, char **envp);
+static void	ft_exec(char *arg, char **envp);
 
 int	main(int argc, char **argv, char **envp)
 {
@@ -39,4 +41,22 @@ int	main(int argc, char **argv, char **envp)
 		ft_pass_to_child(argv[index++], envp);
 	dup2(files[1], STDOUT_FILENO);
 	ft_exec(argv[argc - 2], envp);
+}
+
+static void	ft_pass_to_child(char *arg, char **envp)
+{
+	pid_t	pid;
+
+	pid = fork();
+	if (pid == -1)
+		perror("Fork failure");
+	else if (pid == 0)
+		ft_exec(arg, envp);
+	else
+		waitpid(pid, NULL, NULL);
+}
+
+static void	ft_exec(char *arg, char **envp)
+{
+	
 }

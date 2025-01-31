@@ -24,7 +24,7 @@ LIBFT			= libft/libft.a
 		### SOURCE ###
 
 SOURCES			= pipex.c \
-				  input_parsing.c \
+				  file_handling.c \
 				  pipex_utils.c
 
 HEADERS			= pipex.h
