@@ -46,14 +46,25 @@ int	main(int argc, char **argv, char **envp)
 static void	ft_pass_to_child(char *arg, char **envp)
 {
 	pid_t	pid;
+	int		fildes[2];
 
+	if (pipe(fildes) == -1)
+		perror("Pipe failure");
 	pid = fork();
 	if (pid == -1)
 		perror("Fork failure");
 	else if (pid == 0)
+	{
+		dup2(fildes[1], STDOUT_FILENO);
+		close(fildes[0]);
 		ft_exec(arg, envp);
+	}
 	else
-		waitpid(pid, NULL, NULL);
+	{
+		dup2(fildes[0], STDIN_FILENO);
+		close(fildes[1]);
+		waitpid(pid, NULL, 0);
+	}
 }
 
 static void	ft_exec(char *arg, char **envp)

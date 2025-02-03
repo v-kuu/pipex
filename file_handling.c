@@ -40,8 +40,8 @@ void	ft_open_files(char *infile, char *outfile, int files[2], bool heredoc)
 
 static int	ft_open(char *file, int mode)
 {
-	if (mode == READ && access(file, R_OK | O_CLOEXEC) != -1)
-		return (open(file, O_RDONLY));
+	if (mode == READ && access(file, R_OK) != -1)
+		return (open(file, O_RDONLY | O_CLOEXEC));
 	else if (mode == TRUNC && access(file, W_OK) != -1)
 		return (open(file, O_WRONLY | O_CREAT | O_TRUNC, 0644));
 	else if (mode == APPEND && access(file, W_OK) != -1)
