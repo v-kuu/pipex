@@ -12,60 +12,35 @@
 
 #include "pipex.h"
 
-static void	ft_create_cmd(t_cmd *cmd, char **paths, char **args, int index);
-static char	*ft_test_path(char **paths, char *name);
 static char	*ft_glue_path(char *path, char *name);
 
-t_cmd	*ft_parse_cmds(int count, char **args, char **envp, t_cmd *commands)
+char	*ft_test_paths(char *name, char **envp)
 {
-	char	*path;
+	char	*final;
 	char	**paths;
 	int		index;
 
+	paths = NULL;
 	index = -1;
 	while (envp[++index])
 	{
 		if (ft_strncmp(envp[index], "PATH=", 5) == 0)
 		{
-			path = &envp[index][5];
+			paths = ft_split(&envp[index][5], ':');
 			break ;
 		}
 	}
-	paths = ft_split(path, ':');
 	if (!paths)
-		return (ft_free_commands(commands));
-	index = -1;
-	while (++index < count)
-	{
-		ft_create_cmd(&commands[index], paths, args, index);
-		if (!commands[index].path)
-			return (ft_free_commands(commands));
-	}
-	ft_free_str_arr(paths);
-	return (commands);
-}
-
-static void	ft_create_cmd(t_cmd *cmd, char **paths, char **args, int index)
-{
-	cmd->args = ft_split(args[index], ' ');
-	if (!cmd->args)
-		return ;
-	cmd->path = ft_test_path(paths, cmd->args[0]);
-}
-
-static char	*ft_test_path(char **paths, char *name)
-{
-	char	*path;
-
+		return (NULL);
 	while (*paths)
 	{
-		path = ft_glue_path(*paths, name);
-		if (access(path, X_OK) == 0)
+		final = ft_glue_path(*paths, name);
+		if (access(final, X_OK) == 0)
 			break ;
-		ft_free((void **)&path);
+		ft_free((void **)&final);
 		paths++;
 	}
-	return (path);
+	return (final);
 }
 
 static char	*ft_glue_path(char *path, char *name)

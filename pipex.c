@@ -58,6 +58,21 @@ static void	ft_pass_to_child(char *arg, char **envp)
 
 static void	ft_exec(char *arg, char **envp)
 {
-	// parse commands
-	// execve
+	char	*path;
+	char	**argv;
+
+	argv = ft_split(arg, ' ');
+	if (!argv)
+	{
+		perror("Failed to parse arguments");
+		exit(EXIT_FAILURE);
+	}
+	path = ft_test_paths(argv[0], envp);
+	if (!path)
+	{
+		perror("Invalid command");
+		exit(EXIT_FAILURE);
+	}
+	execve(path, argv, envp);
+	perror("Execve failure");
 }

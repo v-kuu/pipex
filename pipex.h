@@ -28,6 +28,7 @@ typedef struct s_cmd
 }			t_cmd;
 
 void	ft_open_files(char *infile, char *outfile, int files[2], bool heredoc);
+char	*ft_test_paths(char *name, char **envp);
 t_cmd	*ft_parse_cmds(int count, char **args, char **envp, t_cmd *commands);
 
 #endif
