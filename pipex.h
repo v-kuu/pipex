@@ -21,14 +21,7 @@
 # define READ 1
 # define TRUNC 2
 
-typedef struct s_cmd
-{
-	char	*path;
-	char	**args;
-}			t_cmd;
-
-void	ft_open_files(char *infile, char *outfile, int files[2], bool heredoc);
+void	ft_open_files(char *infile, char *outfile, int files[2], int heredoc);
 char	*ft_test_paths(char *name, char **envp);
-t_cmd	*ft_parse_cmds(int count, char **args, char **envp, t_cmd *commands);
 
 #endif

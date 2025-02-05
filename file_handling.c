@@ -16,15 +16,15 @@ static int	ft_open(char *file, int mode);
 static int	ft_read_heredoc(char *delim);
 static void	ft_read_lines(char *delim);
 
-void	ft_open_files(char *infile, char *outfile, int files[2], bool heredoc)
+void	ft_open_files(char *infile, char *outfile, int files[2], int heredoc)
 {
-	if (heredoc == true)
+	if (heredoc == 1)
 		files[0] = ft_read_heredoc(infile);
 	else
 		files[0] = ft_open(infile, READ);
 	if (files[0] == -1)
 		perror("Infile error");
-	if (heredoc == true)
+	if (heredoc == 1)
 		files[1] = ft_open(outfile, APPEND);
 	else
 		files[1] = ft_open(outfile, TRUNC);
@@ -32,7 +32,7 @@ void	ft_open_files(char *infile, char *outfile, int files[2], bool heredoc)
 	{
 		perror("Outfile error");
 		if (files[0] != -1)
-		close(files[0]);
+			close(files[0]);
 	}
 	if (files[1] == -1 || files[0] == -1)
 		exit(EXIT_FAILURE);
@@ -40,11 +40,11 @@ void	ft_open_files(char *infile, char *outfile, int files[2], bool heredoc)
 
 static int	ft_open(char *file, int mode)
 {
-	if (mode == READ && access(file, R_OK) != -1)
-		return (open(file, O_RDONLY | O_CLOEXEC));
-	else if (mode == TRUNC && access(file, W_OK) != -1)
+	if (mode == READ)
+		return (open(file, O_RDONLY));
+	else if (mode == TRUNC)
 		return (open(file, O_WRONLY | O_CREAT | O_TRUNC, 0644));
-	else if (mode == APPEND && access(file, W_OK) != -1)
+	else if (mode == APPEND)
 		return (open(file, O_WRONLY | O_CREAT | O_APPEND, 0644));
 	else
 		return (-1);
@@ -84,11 +84,9 @@ static void	ft_read_lines(char *delim)
 	{
 		line = get_next_line(STDIN_FILENO);
 		if (!line)
-		{
-			perror("Heredoc failure");
-			exit(EXIT_FAILURE);
-		}
-		if (ft_strncmp(line, delim, ft_strlen(delim)) == 0)
+			exit(EXIT_SUCCESS);
+		if (ft_strlen(delim) == ft_strlen(line)
+			&& (ft_strncmp(line, delim, ft_strlen(delim)) == 0))
 		{
 			free(line);
 			exit(EXIT_SUCCESS);

@@ -12,35 +12,35 @@
 
 #include "pipex.h"
 
-static void	ft_pass_to_child(char *arg, char **envp);
-static void	ft_exec(char *arg, char **envp);
+static void		ft_pass_to_child(char *arg, char **envp);
+static void		ft_exec(char *arg, char **envp);
+static pid_t	ft_final_cmd(char *arg, char **envp);
+static void		ft_exit(int commands, int files[2], pid_t last_pid);
 
 int	main(int argc, char **argv, char **envp)
 {
-	int	index;
-	int	files[2];
+	int		index;
+	int		files[2];
+	int		heredoc;
+	pid_t	final_cmd;
 
-	if (argc < 5)
+	if (argc < 5 || (ft_strncmp(argv[1], "here_doc", 8) == 0 && argc < 6))
 	{
-		ft_printf("Usage: ./pipex <infile/here_doc> <cmd1>...<cmdn> outfile>");
+		ft_printf(
+			"Usage: ./pipex <infile/here_doc DELIM> <cmd1>...<cmdn> outfile>");
 		exit(EXIT_SUCCESS);
 	}
+	heredoc = 0;
 	if (ft_strncmp(argv[1], "here_doc", 8) == 0)
-	{
-		index = 3;
-		ft_open_files(argv[2], argv[argc - 1], files, true);
-		dup2(files[0], STDIN_FILENO);
-	}
-	else
-	{
-		index = 2;
-		ft_open_files(argv[1], argv[argc - 1], files, false);
-		dup2(files[0], STDIN_FILENO);
-	}
+		heredoc = 1;
+	ft_open_files(argv[1 + heredoc], argv[argc - 1], files, heredoc);
+	dup2(files[0], STDIN_FILENO);
+	index = 2 + heredoc;
 	while (index < argc - 2)
 		ft_pass_to_child(argv[index++], envp);
 	dup2(files[1], STDOUT_FILENO);
-	ft_exec(argv[argc - 2], envp);
+	final_cmd = ft_final_cmd(argv[argc - 2], envp);
+	ft_exit((argc - 3 - heredoc), files, final_cmd);
 }
 
 static void	ft_pass_to_child(char *arg, char **envp)
@@ -63,7 +63,6 @@ static void	ft_pass_to_child(char *arg, char **envp)
 	{
 		dup2(fildes[0], STDIN_FILENO);
 		close(fildes[1]);
-		waitpid(pid, NULL, 0);
 	}
 }
 
@@ -79,11 +78,36 @@ static void	ft_exec(char *arg, char **envp)
 		exit(EXIT_FAILURE);
 	}
 	path = ft_test_paths(argv[0], envp);
-	if (!path)
-	{
-		perror("Invalid command");
-		exit(EXIT_FAILURE);
-	}
 	execve(path, argv, envp);
 	perror("Execve failure");
+	exit(EXIT_FAILURE);
+}
+
+static pid_t	ft_final_cmd(char *arg, char **envp)
+{
+	pid_t	pid;
+
+	pid = fork();
+	if (pid == -1)
+		perror("Fork failure");
+	else if (pid == 0)
+		ft_exec(arg, envp);
+	return (pid);
+}
+
+static void	ft_exit(int commands, int files[2], pid_t last_pid)
+{
+	int		status_code;
+	int		exit_code;
+	pid_t	current_pid;
+
+	close(files[0]);
+	close(files[1]);
+	while (commands-- > 0)
+	{
+		current_pid = wait(&status_code);
+		if (current_pid == last_pid && WIFEXITED(status_code))
+			exit_code = WEXITSTATUS(status_code);
+	}
+	exit(exit_code);
 }

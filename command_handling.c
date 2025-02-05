@@ -20,26 +20,25 @@ char	*ft_test_paths(char *name, char **envp)
 	char	**paths;
 	int		index;
 
+	if (ft_strchr(name, '/'))
+		return (name);
 	paths = NULL;
 	index = -1;
 	while (envp[++index])
-	{
 		if (ft_strncmp(envp[index], "PATH=", 5) == 0)
-		{
-			paths = ft_split(&envp[index][5], ':');
 			break ;
-		}
-	}
+	paths = ft_split(&envp[index][5], ':');
 	if (!paths)
 		return (NULL);
-	while (*paths)
+	index = -1;
+	while (paths[++index])
 	{
-		final = ft_glue_path(*paths, name);
+		final = ft_glue_path(paths[index], name);
 		if (access(final, X_OK) == 0)
 			break ;
 		ft_free((void **)&final);
-		paths++;
 	}
+	ft_free_str_arr(paths);
 	return (final);
 }
 
