@@ -100,6 +100,8 @@ static void	ft_exec(char *arg, char **envp)
 	}
 	path = ft_test_paths(argv[0], envp);
 	execve(path, argv, envp);
+	ft_free_str_arr(argv);
+	ft_free((void **)&path);
 	perror("Execve failure");
 	exit(EXIT_FAILURE);
 }
