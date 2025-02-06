@@ -16,26 +16,30 @@ static int	ft_open(char *file, int mode);
 static int	ft_read_heredoc(char *delim);
 static void	ft_read_lines(char *delim);
 
-void	ft_open_files(char *infile, char *outfile, int files[2], int heredoc)
+int	ft_open_file(char *input, int mode)
 {
-	if (heredoc == 1)
-		files[0] = ft_read_heredoc(infile);
+	int	file;
+
+	if (mode == HEREDOC)
+		file = ft_read_heredoc(input);
+	else if (mode == READ)
+		file = ft_open(input, READ);
+	else if (mode == TRUNC)
+		file = ft_open(input, TRUNC);
+	else if (mode == APPEND)
+		file = ft_open(input, APPEND);
 	else
-		files[0] = ft_open(infile, READ);
-	if (files[0] == -1)
-		perror("Infile error");
-	if (heredoc == 1)
-		files[1] = ft_open(outfile, APPEND);
-	else
-		files[1] = ft_open(outfile, TRUNC);
-	if (files[1] == -1)
+		return (-1);
+	if (file == -1)
 	{
-		perror("Outfile error");
-		if (files[0] != -1)
-			close(files[0]);
+		if (mode == HEREDOC)
+			perror("Here_doc error");
+		else if (mode == READ)
+			perror("Infile error");
+		else
+			perror("Outfile error");
 	}
-	if (files[1] == -1 || files[0] == -1)
-		exit(EXIT_FAILURE);
+	return (file);
 }
 
 static int	ft_open(char *file, int mode)

@@ -6,7 +6,7 @@
 /*   By: vkuusela <vkuusela@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/22 14:15:54 by vkuusela          #+#    #+#             */
-/*   Updated: 2025/01/23 13:46:35 by vkuusela         ###   ########.fr       */
+/*   Updated: 2025/02/06 14:30:48 by vkuusela         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,11 +17,18 @@
 # include <fcntl.h>
 # include <sys/wait.h>
 
-# define APPEND 0
-# define READ 1
-# define TRUNC 2
+enum	e_mode
+{
+	READ,
+	HEREDOC,
+	TRUNC,
+	APPEND
+};
 
-void	ft_open_files(char *infile, char *outfile, int files[2], int heredoc);
+int		ft_open_file(char *input, int mode);
 char	*ft_test_paths(char *name, char **envp);
+void	ft_first_cmd(char *arg, char **envp, char *infile, int heredoc);
+void	ft_mid_cmd(char *arg, char **envp);
+pid_t	ft_final_cmd(char *arg, char **envp, char *outfile, int heredoc);
 
 #endif
