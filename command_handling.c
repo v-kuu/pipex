@@ -13,6 +13,7 @@
 #include "pipex.h"
 
 static char	*ft_glue_path(char *path, char *name);
+static char	**ft_list_paths(char **envp);
 
 char	*ft_test_paths(char *name, char **envp)
 {
@@ -22,12 +23,7 @@ char	*ft_test_paths(char *name, char **envp)
 
 	if (ft_strchr(name, '/'))
 		return (name);
-	paths = NULL;
-	index = -1;
-	while (envp[++index])
-		if (ft_strncmp(envp[index], "PATH=", 5) == 0)
-			break ;
-	paths = ft_split(&envp[index][5], ':');
+	paths = ft_list_paths(envp);
 	if (!paths)
 		return (NULL);
 	index = -1;
@@ -39,7 +35,25 @@ char	*ft_test_paths(char *name, char **envp)
 		ft_free((void **)&final);
 	}
 	ft_free_str_arr(paths);
+	if (!final)
+	{
+		write(1, "pipex: permission denied:", 25);
+		exit(126);
+	}
 	return (final);
+}
+
+static char	**ft_list_paths(char **envp)
+{
+	int		index;
+	char	**paths;
+
+	index = -1;
+	while (envp[++index])
+		if (ft_strncmp(envp[index], "PATH=", 5) == 0)
+			break ;
+	paths = ft_split(&envp[index][5], ':');
+	return (paths);
 }
 
 static char	*ft_glue_path(char *path, char *name)
@@ -49,6 +63,8 @@ static char	*ft_glue_path(char *path, char *name)
 	int		full_len;
 	char	*full;
 
+	if (!(*name))
+		return (NULL);
 	path_len = ft_strlen(path);
 	name_len = ft_strlen(name);
 	full_len = path_len + name_len + 2;
