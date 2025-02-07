@@ -21,6 +21,8 @@ char	*ft_test_paths(char *name, char **envp)
 	char	**paths;
 	int		index;
 
+	if (!name)
+		return (NULL);
 	if (ft_strchr(name, '/'))
 		return (name);
 	paths = ft_list_paths(envp);
@@ -35,11 +37,6 @@ char	*ft_test_paths(char *name, char **envp)
 		ft_free((void **)&final);
 	}
 	ft_free_str_arr(paths);
-	if (!final)
-	{
-		write(1, "pipex: permission denied:", 25);
-		exit(126);
-	}
 	return (final);
 }
 
@@ -63,8 +60,6 @@ static char	*ft_glue_path(char *path, char *name)
 	int		full_len;
 	char	*full;
 
-	if (!(*name))
-		return (NULL);
 	path_len = ft_strlen(path);
 	name_len = ft_strlen(name);
 	full_len = path_len + name_len + 2;
@@ -75,4 +70,22 @@ static char	*ft_glue_path(char *path, char *name)
 	ft_strlcat(full, "/", full_len);
 	ft_strlcat(full, name, full_len);
 	return (full);
+}
+
+void	ft_command_not_found(char *arg, char **envp)
+{
+	char	**argv;
+
+	argv = ft_calloc(3, sizeof(char *));
+	if (!argv)
+	{
+		perror("Failed to allocate memory for error message");
+		exit(EXIT_FAILURE);
+	}
+	argv[0] = "/usr/lib/command-not-found";
+	argv[1] = arg;
+	execve(argv[0], argv, envp);
+	ft_free_str_arr(argv);
+	perror("Execve failure");
+	exit(EXIT_FAILURE);
 }

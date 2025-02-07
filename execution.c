@@ -91,7 +91,7 @@ static void	ft_exec(char *arg, char **envp)
 {
 	char	*path;
 	char	**argv;
-
+	
 	argv = ft_split(arg, ' ');
 	if (!argv)
 	{
@@ -99,6 +99,13 @@ static void	ft_exec(char *arg, char **envp)
 		exit(EXIT_FAILURE);
 	}
 	path = ft_test_paths(argv[0], envp);
+	if (!path)
+	{
+		ft_free_str_arr(argv);
+		ft_command_not_found(arg, envp);
+	}
+	free(argv[0]);
+	argv[0] = path;
 	execve(path, argv, envp);
 	ft_free_str_arr(argv);
 	ft_free((void **)&path);

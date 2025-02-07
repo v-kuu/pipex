@@ -24,7 +24,7 @@ int	main(int argc, char **argv, char **envp)
 	{
 		ft_printf(
 			"Usage: ./pipex <infile/here_doc DELIM> <cmd1>...<cmdn> outfile>");
-		exit(EXIT_SUCCESS);
+		exit(EXIT_FAILURE);
 	}
 	heredoc = 0;
 	if (ft_strncmp(argv[1], "here_doc", 8) == 0)
