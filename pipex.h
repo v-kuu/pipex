@@ -31,5 +31,6 @@ void	ft_first_cmd(char *arg, char **envp, char *infile, int heredoc);
 void	ft_mid_cmd(char *arg, char **envp);
 pid_t	ft_final_cmd(char *arg, char **envp, char *outfile, int heredoc);
 void	ft_command_not_found(char *arg, char **envp);
+void	ft_file_error(char *filename);
 
 #endif

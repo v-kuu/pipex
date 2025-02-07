@@ -32,7 +32,7 @@ void	ft_first_cmd(char *arg, char **envp, char *infile, int heredoc)
 		if (fd == -1)
 		{
 			ft_close_fds(pipe_fd);
-			exit(EXIT_FAILURE);
+			ft_file_error(infile);
 		}
 		dup2(fd, STDIN_FILENO);
 		dup2(pipe_fd[1], STDOUT_FILENO);
@@ -57,15 +57,13 @@ void	ft_mid_cmd(char *arg, char **envp)
 	else if (pid == 0)
 	{
 		dup2(pipe_fd[1], STDOUT_FILENO);
-		close(pipe_fd[1]);
-		close(pipe_fd[0]);
+		ft_close_fds(pipe_fd);
 		ft_exec(arg, envp);
 	}
 	else
 	{
 		dup2(pipe_fd[0], STDIN_FILENO);
-		close(pipe_fd[0]);
-		close(pipe_fd[1]);
+		ft_close_fds(pipe_fd);
 	}
 }
 
@@ -80,6 +78,8 @@ pid_t	ft_final_cmd(char *arg, char **envp, char *outfile, int heredoc)
 	else if (pid == 0)
 	{
 		fd = ft_open_file(outfile, heredoc + 2);
+		if (fd == -1)
+			ft_file_error(outfile);
 		dup2(fd, STDOUT_FILENO);
 		close(fd);
 		ft_exec(arg, envp);

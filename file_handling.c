@@ -30,15 +30,6 @@ int	ft_open_file(char *input, int mode)
 		file = ft_open(input, APPEND);
 	else
 		return (-1);
-	if (file == -1)
-	{
-		if (mode == HEREDOC)
-			perror("Here_doc error");
-		else if (mode == READ)
-			perror("Infile error");
-		else
-			perror("Outfile error");
-	}
 	return (file);
 }
 
@@ -98,4 +89,23 @@ static void	ft_read_lines(char *delim)
 		write(STDOUT_FILENO, line, ft_strlen(line));
 		free(line);
 	}
+}
+
+void	ft_file_error(char *filename)
+{
+	char	*full;
+	int		file_len;
+
+	file_len = ft_strlen(filename);
+	full = ft_calloc((file_len + 8), sizeof(char));
+	if (!full)
+	{
+		perror("Failed to print error message");
+		exit(EXIT_FAILURE);
+	}
+	ft_strlcat(full, "pipex: ", (file_len + 8));
+	ft_strlcat(full, filename, (file_len + 8));
+	perror(full);
+	free(full);
+	exit(EXIT_FAILURE);
 }
