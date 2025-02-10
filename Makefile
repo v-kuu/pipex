@@ -28,11 +28,21 @@ SOURCES			= pipex.c \
 				  command_handling.c \
 				  execution.c
 
+SOURCES_BONUS	= pipex_bonus.c \
+				  file_handling_bonus.c \
+				  command_handling_bonus.c \
+				  execution_bonus.c
+
 HEADERS			= pipex.h
+
+HEADERS_BONUS	= pipex_bonus.h
 
 OBJECTS			= $(SOURCES:.c=.o)
 
-%.o:			%.c $(HEADERS)
+OBJECTS_BONUS	= $(SOURCES_BONUS:.c=.o)
+
+
+%.o:			%.c $(HEADERS) $(HEADERS_BONUS)
 	@$(CC) $(CFLAGS) -c $< -o $@
 
 all: 			$(NAME)
@@ -40,6 +50,10 @@ all: 			$(NAME)
 $(NAME):		$(LIBFT) $(OBJECTS)
 	@echo "Compiling pipex..."
 	@$(CC) $(CFLAGS) $(OBJECTS) $(LIBFT) -o $(NAME)
+
+$(BONUS):		$(LIBFT) $(OBJECTS_BONUS)
+	@echo "Compiling bonuses..."
+	@$(CC) $(CFLAGS) $(OBJECTS_BONUS) $(LIBFT) -o $(NAME)
 
 $(LIBFT):
 	@echo "Compiling libft..."
