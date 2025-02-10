@@ -104,11 +104,10 @@ static void	ft_exec(char *arg, char **envp)
 		ft_free_str_arr(argv);
 		ft_command_not_found(arg, envp);
 	}
-	free(argv[0]);
+	ft_free((void **)&(argv[0]));
 	argv[0] = path;
 	execve(path, argv, envp);
 	ft_free_str_arr(argv);
-	ft_free((void **)&path);
 	perror("Execve failure");
 	exit(EXIT_FAILURE);
 }

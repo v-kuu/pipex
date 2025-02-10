@@ -87,7 +87,7 @@ static void	ft_read_lines(char *delim)
 			exit(EXIT_SUCCESS);
 		}
 		write(STDOUT_FILENO, line, ft_strlen(line));
-		free(line);
+		ft_free((void **)&line);
 	}
 }
 
@@ -106,6 +106,6 @@ void	ft_file_error(char *filename)
 	ft_strlcat(full, "pipex: ", (file_len + 8));
 	ft_strlcat(full, filename, (file_len + 8));
 	perror(full);
-	free(full);
+	ft_free((void **)&full);
 	exit(EXIT_FAILURE);
 }

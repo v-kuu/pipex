@@ -24,7 +24,7 @@ char	*ft_test_paths(char *name, char **envp)
 	if (!name)
 		return (NULL);
 	if (ft_strchr(name, '/'))
-		return (name);
+		return (ft_strdup(name));
 	paths = ft_list_paths(envp);
 	if (!paths)
 		return (NULL);
