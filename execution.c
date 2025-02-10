@@ -91,7 +91,7 @@ static void	ft_exec(char *arg, char **envp)
 {
 	char	*path;
 	char	**argv;
-	
+
 	argv = ft_split(arg, ' ');
 	if (!argv)
 	{
@@ -107,9 +107,9 @@ static void	ft_exec(char *arg, char **envp)
 	ft_free((void **)&(argv[0]));
 	argv[0] = path;
 	execve(path, argv, envp);
+	ft_command_error(path);
 	ft_free_str_arr(argv);
-	perror("Execve failure");
-	exit(EXIT_FAILURE);
+	exit(126);
 }
 
 static void	ft_close_fds(int fildes[2])

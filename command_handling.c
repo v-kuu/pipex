@@ -85,7 +85,25 @@ void	ft_command_not_found(char *arg, char **envp)
 	argv[0] = "/usr/lib/command-not-found";
 	argv[1] = arg;
 	execve(argv[0], argv, envp);
+	perror("pipex:");
 	ft_free_str_arr(argv);
-	perror("Execve failure");
 	exit(EXIT_FAILURE);
+}
+
+void	ft_command_error(char *command)
+{
+	char	*full;
+	int		cmd_len;
+
+	cmd_len = ft_strlen(command);
+	full = ft_calloc((cmd_len + 8), sizeof(char));
+	if (!full)
+	{
+		perror("Failed to print error message");
+		exit(EXIT_FAILURE);
+	}
+	ft_strlcat(full, "pipex: ", (cmd_len + 8));
+	ft_strlcat(full, command, (cmd_len + 8));
+	perror(full);
+	ft_free((void **)&full);
 }

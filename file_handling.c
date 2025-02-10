@@ -74,16 +74,18 @@ static int	ft_read_heredoc(char *delim)
 static void	ft_read_lines(char *delim)
 {
 	char	*line;
+	size_t	delim_len;
 
+	delim_len = ft_strlen(delim);
 	while (1)
 	{
 		line = get_next_line(STDIN_FILENO);
 		if (!line)
 			exit(EXIT_SUCCESS);
-		if (ft_strlen(delim) == ft_strlen(line)
-			&& (ft_strncmp(line, delim, ft_strlen(delim)) == 0))
+		if (ft_strncmp(line, delim, delim_len) == 0
+			&& line[delim_len + 1] == '\0')
 		{
-			free(line);
+			ft_free((void **)&line);
 			exit(EXIT_SUCCESS);
 		}
 		write(STDOUT_FILENO, line, ft_strlen(line));
