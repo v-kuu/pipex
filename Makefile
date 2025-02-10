@@ -61,7 +61,7 @@ $(LIBFT):
 
 clean:
 	@echo "Cleaning objects..."
-	@$(RM) $(OBJECTS)
+	@$(RM) $(OBJECTS) $(OBJECTS_BONUS)
 	@(cd libft/ && make clean)
 
 fclean:			clean
