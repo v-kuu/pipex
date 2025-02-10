@@ -81,6 +81,6 @@ gprof:			CFLAGS += -g -pg
 gprof:			re
 
 norminette:
-	norminette $(SOURCES) $(HEADERS) ./libft
+	norminette $(SOURCES) $(SOURCES_BONUS) $(HEADERS) $(HEADERS_BONUS) ./libft
 
 .PHONY:			all clean fclean re fsanitize debug gprof norminette
