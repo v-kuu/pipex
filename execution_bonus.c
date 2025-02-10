@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "pipex.h"
+#include "pipex_bonus.h"
 
 static void	ft_exec(char *arg, char **envp);
 static void	ft_close_fds(int fildes[2]);

@@ -24,7 +24,7 @@ int	main(int argc, char **argv, char **envp)
 			"Usage: ./pipex <infile> <cmd1> <cmd2> outfile>");
 		exit(EXIT_FAILURE);
 	}
-	ft_first_cmd(argv[1], envp, argv[2]);
+	ft_first_cmd(argv[2], envp, argv[1]);
 	final_cmd = ft_final_cmd(argv[3], envp, argv[4]);
 	ft_exit(2, final_cmd);
 }

@@ -51,7 +51,7 @@ $(NAME):		$(LIBFT) $(OBJECTS)
 	@echo "Compiling pipex..."
 	@$(CC) $(CFLAGS) $(OBJECTS) $(LIBFT) -o $(NAME)
 
-$(BONUS):		$(LIBFT) $(OBJECTS_BONUS)
+bonus:		$(LIBFT) $(OBJECTS_BONUS)
 	@echo "Compiling bonuses..."
 	@$(CC) $(CFLAGS) $(OBJECTS_BONUS) $(LIBFT) -o $(NAME)
 
@@ -83,4 +83,4 @@ gprof:			re
 norminette:
 	norminette $(SOURCES) $(SOURCES_BONUS) $(HEADERS) $(HEADERS_BONUS) ./libft
 
-.PHONY:			all clean fclean re fsanitize debug gprof norminette
+.PHONY:			all clean fclean re fsanitize debug gprof norminette bonus

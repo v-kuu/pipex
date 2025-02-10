@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "pipex.h"
+#include "pipex_bonus.h"
 
 static char	*ft_glue_path(char *path, char *name);
 static char	**ft_list_paths(char **envp);
