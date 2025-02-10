@@ -16,7 +16,6 @@ static void		ft_exit(int commands, pid_t last_pid);
 
 int	main(int argc, char **argv, char **envp)
 {
-	int		index;
 	pid_t	final_cmd;
 
 	if (argc < 5)

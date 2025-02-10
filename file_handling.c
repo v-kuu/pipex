@@ -12,9 +12,6 @@
 
 #include "pipex.h"
 
-static int	ft_read_heredoc(char *delim);
-static void	ft_read_lines(char *delim);
-
 int	ft_open_file(char *file, int mode)
 {
 	if (mode == 0)
