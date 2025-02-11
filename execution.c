@@ -66,23 +66,27 @@ pid_t	ft_final_cmd(char *arg, char **envp, char *outfile)
 
 static void	ft_exec(char *arg, char **envp)
 {
-	char	*path;
+	char	*full_path;
 	char	**argv;
 	int		exit_code;
+	int		path_found;
 
+	path_found = 0;
 	argv = ft_split(arg, ' ');
 	if (!argv)
 		ft_exit_message("Failed to parse arguments");
-	path = ft_test_paths(argv[0], envp);
-	if (!path)
+	full_path = ft_test_paths(argv[0], envp, &path_found);
+	if (!full_path)
 	{
 		ft_free_str_arr(argv);
+		if (!path_found && envp)
+			exit(ft_command_error(arg));
 		ft_command_not_found(arg, envp);
 	}
 	ft_free((void **)&(argv[0]));
-	argv[0] = path;
-	execve(path, argv, envp);
-	exit_code = ft_command_error(path);
+	argv[0] = full_path;
+	execve(full_path, argv, envp);
+	exit_code = ft_command_error(full_path);
 	ft_free_str_arr(argv);
 	exit(exit_code);
 }

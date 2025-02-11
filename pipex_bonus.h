@@ -26,7 +26,7 @@ enum	e_mode
 };
 
 int		ft_open_file(char *input, int mode);
-char	*ft_test_paths(char *name, char **envp);
+char	*ft_test_paths(char *name, char **envp, int *path_found);
 void	ft_first_cmd(char *arg, char **envp, char *infile, int heredoc);
 void	ft_mid_cmd(char *arg, char **envp);
 pid_t	ft_final_cmd(char *arg, char **envp, char *outfile, int heredoc);

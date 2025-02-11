@@ -13,9 +13,9 @@
 #include "pipex.h"
 
 static char	*ft_glue_path(char *path, char *name);
-static char	**ft_list_paths(char **envp);
+static char	**ft_list_paths(char **envp, int *path_found);
 
-char	*ft_test_paths(char *name, char **envp)
+char	*ft_test_paths(char *name, char **envp, int *path_found)
 {
 	char	*final;
 	char	**paths;
@@ -25,7 +25,7 @@ char	*ft_test_paths(char *name, char **envp)
 		return (NULL);
 	if (ft_strchr(name, '/'))
 		return (ft_strdup(name));
-	paths = ft_list_paths(envp);
+	paths = ft_list_paths(envp, path_found);
 	if (!paths)
 		return (NULL);
 	index = -1;
@@ -40,7 +40,7 @@ char	*ft_test_paths(char *name, char **envp)
 	return (final);
 }
 
-static char	**ft_list_paths(char **envp)
+static char	**ft_list_paths(char **envp, int *path_found)
 {
 	int		index;
 	char	**paths;
@@ -54,6 +54,7 @@ static char	**ft_list_paths(char **envp)
 	if (!(envp[index]))
 		return (NULL);
 	paths = ft_split(&envp[index][5], ':');
+	*path_found = 1;
 	return (paths);
 }
 
@@ -82,10 +83,7 @@ void	ft_command_not_found(char *arg, char **envp)
 
 	argv = ft_calloc(3, sizeof(char *));
 	if (!argv)
-	{
-		perror("Failed to allocate memory for error message");
-		exit(EXIT_FAILURE);
-	}
+		ft_exit_message("Failed to allocate memory for error message");
 	argv[0] = "/usr/lib/command-not-found";
 	argv[1] = arg;
 	execve(argv[0], argv, envp);
@@ -107,10 +105,7 @@ int	ft_command_error(char *command)
 	cmd_len = ft_strlen(command);
 	full = ft_calloc((cmd_len + 8), sizeof(char));
 	if (!full)
-	{
-		perror("Failed to print error message");
-		exit(EXIT_FAILURE);
-	}
+		ft_exit_message("Failed to print error message");
 	ft_strlcat(full, "pipex: ", (cmd_len + 8));
 	ft_strlcat(full, command, (cmd_len + 8));
 	perror(full);
