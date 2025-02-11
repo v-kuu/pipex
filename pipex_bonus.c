@@ -22,8 +22,8 @@ int	main(int argc, char **argv, char **envp)
 
 	if (argc < 5 || (ft_strncmp(argv[1], "here_doc", 8) == 0 && argc < 6))
 	{
-		ft_printf(
-			"Usage: ./pipex <infile/here_doc DELIM> <cmd1>...<cmdn> outfile>");
+		ft_putstr_fd(
+			"Usage: ./pipex <infile/here_doc EOF> <cmd1>...<cmdn> outfile>", 2);
 		exit(EXIT_FAILURE);
 	}
 	heredoc = 0;
@@ -43,6 +43,7 @@ static void	ft_exit(int commands, pid_t last_pid)
 	int		exit_code;
 	pid_t	current_pid;
 
+	close(STDIN_FILENO);
 	while (commands-- > 0)
 	{
 		current_pid = wait(&status_code);
@@ -50,4 +51,18 @@ static void	ft_exit(int commands, pid_t last_pid)
 			exit_code = WEXITSTATUS(status_code);
 	}
 	exit(exit_code);
+}
+
+void	ft_exit_message(char *message)
+{
+	perror(message);
+	exit(EXIT_FAILURE);
+}
+
+void	ft_exit_pipes(char *message, int fds[2])
+{
+	perror(message);
+	close(fds[0]);
+	close(fds[1]);
+	exit(EXIT_FAILURE);
 }

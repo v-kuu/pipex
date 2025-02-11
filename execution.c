@@ -22,10 +22,10 @@ void	ft_first_cmd(char *arg, char **envp, char *infile)
 	int		fd;
 
 	if (pipe(pipe_fd) == -1)
-		perror("Pipe failure");
+		ft_exit_message("Pipe failure");
 	pid = fork();
 	if (pid == -1)
-		perror("Fork failure");
+		ft_exit_pipes("Fork failure", pipe_fd);
 	else if (pid == 0)
 	{
 		fd = ft_open_file(infile, 0);
@@ -51,7 +51,7 @@ pid_t	ft_final_cmd(char *arg, char **envp, char *outfile)
 
 	pid = fork();
 	if (pid == -1)
-		perror("Fork failure");
+		ft_exit_message("Fork failure");
 	else if (pid == 0)
 	{
 		fd = ft_open_file(outfile, 1);
@@ -68,13 +68,11 @@ static void	ft_exec(char *arg, char **envp)
 {
 	char	*path;
 	char	**argv;
+	int		exit_code;
 
 	argv = ft_split(arg, ' ');
 	if (!argv)
-	{
-		perror("Failed to parse arguments");
-		exit(EXIT_FAILURE);
-	}
+		ft_exit_message("Failed to parse arguments");
 	path = ft_test_paths(argv[0], envp);
 	if (!path)
 	{
@@ -84,9 +82,9 @@ static void	ft_exec(char *arg, char **envp)
 	ft_free((void **)&(argv[0]));
 	argv[0] = path;
 	execve(path, argv, envp);
-	ft_command_error(path);
+	exit_code = ft_command_error(path);
 	ft_free_str_arr(argv);
-	exit(126);
+	exit(exit_code);
 }
 
 static void	ft_close_fds(int fildes[2])

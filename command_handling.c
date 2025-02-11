@@ -32,7 +32,7 @@ char	*ft_test_paths(char *name, char **envp)
 	while (paths[++index])
 	{
 		final = ft_glue_path(paths[index], name);
-		if (access(final, X_OK) == 0)
+		if (access(final, F_OK) == 0)
 			break ;
 		ft_free((void **)&final);
 	}
@@ -45,10 +45,14 @@ static char	**ft_list_paths(char **envp)
 	int		index;
 	char	**paths;
 
+	if (!envp)
+		return (NULL);
 	index = -1;
 	while (envp[++index])
 		if (ft_strncmp(envp[index], "PATH=", 5) == 0)
 			break ;
+	if (!(envp[index]))
+		return (NULL);
 	paths = ft_split(&envp[index][5], ':');
 	return (paths);
 }
@@ -90,11 +94,16 @@ void	ft_command_not_found(char *arg, char **envp)
 	exit(EXIT_FAILURE);
 }
 
-void	ft_command_error(char *command)
+int	ft_command_error(char *command)
 {
 	char	*full;
 	int		cmd_len;
+	int		exit_code;
 
+	if (access(command, F_OK))
+		exit_code = 127;
+	else
+		exit_code = 126;
 	cmd_len = ft_strlen(command);
 	full = ft_calloc((cmd_len + 8), sizeof(char));
 	if (!full)
@@ -106,4 +115,5 @@ void	ft_command_error(char *command)
 	ft_strlcat(full, command, (cmd_len + 8));
 	perror(full);
 	ft_free((void **)&full);
+	return (exit_code);
 }
