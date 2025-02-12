@@ -79,16 +79,13 @@ static char	*ft_glue_path(char *path, char *name)
 
 void	ft_command_not_found(char *arg, char **envp)
 {
-	char	**argv;
+	char	*argv[3];
 
-	argv = ft_calloc(3, sizeof(char *));
-	if (!argv)
-		ft_exit_message("Failed to allocate memory for error message");
 	argv[0] = "/usr/lib/command-not-found";
 	argv[1] = arg;
+	argv[2] = NULL;
 	execve(argv[0], argv, envp);
 	perror("pipex:");
-	ft_free_str_arr(argv);
 	exit(EXIT_FAILURE);
 }
 

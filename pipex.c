@@ -58,3 +58,23 @@ void	ft_exit_pipes(char *message, int fds[2])
 	close(fds[1]);
 	exit(EXIT_FAILURE);
 }
+
+int	ft_find_path(char **envp)
+{
+	int	index;
+	int	path_found;
+
+	if (!envp)
+		return (0);
+	path_found = 0;
+	index = -1;
+	while (envp[++index])
+	{
+		if (ft_strncmp(envp[index], "PATH=", 5) == 0)
+		{
+			path_found = 1;
+			break ;
+		}
+	}
+	return (path_found);
+}
