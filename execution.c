@@ -79,7 +79,7 @@ static void	ft_exec(char *arg, char **envp)
 	if (!full_path)
 	{
 		ft_free_str_arr(argv);
-		if (!path_found && !envp)
+		if (!path_found)
 			exit(ft_command_error(arg));
 		ft_command_not_found(arg, envp);
 	}
