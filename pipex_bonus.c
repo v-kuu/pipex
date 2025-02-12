@@ -12,7 +12,7 @@
 
 #include "pipex_bonus.h"
 
-static void		ft_exit(int commands, pid_t last_pid);
+static void	ft_wait(int commands, pid_t last_pid);
 
 int	main(int argc, char **argv, char **envp)
 {
@@ -22,7 +22,7 @@ int	main(int argc, char **argv, char **envp)
 
 	if (argc < 5 || (ft_strncmp(argv[1], "here_doc", 8) == 0 && argc < 6))
 	{
-		ft_putstr_fd(
+		ft_putendl_fd(
 			"Usage: ./pipex <infile/here_doc EOF> <cmd1>...<cmdn> outfile>", 2);
 		exit(EXIT_FAILURE);
 	}
@@ -34,10 +34,10 @@ int	main(int argc, char **argv, char **envp)
 	while (index < argc - 2)
 		ft_mid_cmd(argv[index++], envp);
 	final_cmd = ft_final_cmd(argv[argc - 2], envp, argv[argc - 1], heredoc);
-	ft_exit((argc - 3 - heredoc), final_cmd);
+	ft_wait((argc - 3 - heredoc), final_cmd);
 }
 
-static void	ft_exit(int commands, pid_t last_pid)
+static void	ft_wait(int commands, pid_t last_pid)
 {
 	int		status_code;
 	int		exit_code;
@@ -65,4 +65,25 @@ void	ft_exit_pipes(char *message, int fds[2])
 	close(fds[0]);
 	close(fds[1]);
 	exit(EXIT_FAILURE);
+}
+
+int	ft_command_error(char *command)
+{
+	char	*full;
+	int		cmd_len;
+	int		exit_code;
+
+	if (access(command, F_OK))
+		exit_code = 127;
+	else
+		exit_code = 126;
+	cmd_len = ft_strlen(command);
+	full = ft_calloc((cmd_len + 8), sizeof(char));
+	if (!full)
+		ft_exit_message("Failed to print error message");
+	ft_strlcat(full, "pipex: ", (cmd_len + 8));
+	ft_strlcat(full, command, (cmd_len + 8));
+	perror(full);
+	ft_free((void **)&full);
+	return (exit_code);
 }

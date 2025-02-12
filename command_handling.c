@@ -88,23 +88,22 @@ void	ft_command_not_found(char *arg, char **envp)
 	exit(EXIT_FAILURE);
 }
 
-int	ft_command_error(char *command)
+int	ft_find_path(char **envp)
 {
-	char	*full;
-	int		cmd_len;
-	int		exit_code;
+	int	index;
+	int	path_found;
 
-	if (access(command, F_OK))
-		exit_code = 127;
-	else
-		exit_code = 126;
-	cmd_len = ft_strlen(command);
-	full = ft_calloc((cmd_len + 8), sizeof(char));
-	if (!full)
-		ft_exit_message("Failed to print error message");
-	ft_strlcat(full, "pipex: ", (cmd_len + 8));
-	ft_strlcat(full, command, (cmd_len + 8));
-	perror(full);
-	ft_free((void **)&full);
-	return (exit_code);
+	if (!envp)
+		return (0);
+	path_found = 0;
+	index = -1;
+	while (envp[++index])
+	{
+		if (ft_strncmp(envp[index], "PATH=", 5) == 0)
+		{
+			path_found = 1;
+			break ;
+		}
+	}
+	return (path_found);
 }

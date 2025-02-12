@@ -18,6 +18,7 @@
 # include <sys/wait.h>
 
 int		ft_open_file(char *file, int mode);
+int		ft_find_path(char **envp);
 char	*ft_test_paths(char *name, char **envp);
 void	ft_first_cmd(char *arg, char **envp, char *infile);
 pid_t	ft_final_cmd(char *arg, char **envp, char *outfile);
@@ -26,6 +27,5 @@ void	ft_file_error(char *filename);
 int		ft_command_error(char *command);
 void	ft_exit_message(char *message);
 void	ft_exit_pipes(char *message, int fds[2]);
-int		ft_find_path(char **envp);
 
 #endif

@@ -12,7 +12,7 @@
 
 #include "pipex.h"
 
-static void		ft_exit(int commands, pid_t last_pid);
+static void	ft_wait(int commands, pid_t last_pid);
 
 int	main(int argc, char **argv, char **envp)
 {
@@ -26,10 +26,10 @@ int	main(int argc, char **argv, char **envp)
 	}
 	ft_first_cmd(argv[2], envp, argv[1]);
 	final_cmd = ft_final_cmd(argv[3], envp, argv[4]);
-	ft_exit(2, final_cmd);
+	ft_wait(2, final_cmd);
 }
 
-static void	ft_exit(int commands, pid_t last_pid)
+static void	ft_wait(int commands, pid_t last_pid)
 {
 	int		status_code;
 	int		exit_code;
@@ -59,22 +59,23 @@ void	ft_exit_pipes(char *message, int fds[2])
 	exit(EXIT_FAILURE);
 }
 
-int	ft_find_path(char **envp)
+int	ft_command_error(char *command)
 {
-	int	index;
-	int	path_found;
+	char	*full;
+	int		cmd_len;
+	int		exit_code;
 
-	if (!envp)
-		return (0);
-	path_found = 0;
-	index = -1;
-	while (envp[++index])
-	{
-		if (ft_strncmp(envp[index], "PATH=", 5) == 0)
-		{
-			path_found = 1;
-			break ;
-		}
-	}
-	return (path_found);
+	if (access(command, F_OK))
+		exit_code = 127;
+	else
+		exit_code = 126;
+	cmd_len = ft_strlen(command);
+	full = ft_calloc((cmd_len + 8), sizeof(char));
+	if (!full)
+		ft_exit_message("Failed to print error message");
+	ft_strlcat(full, "pipex: ", (cmd_len + 8));
+	ft_strlcat(full, command, (cmd_len + 8));
+	perror(full);
+	ft_free((void **)&full);
+	return (exit_code);
 }

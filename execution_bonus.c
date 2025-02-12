@@ -94,15 +94,15 @@ static void	ft_exec(char *arg, char **envp)
 	int		exit_code;
 	int		path_found;
 
-	path_found = 0;
+	path_found = ft_find_path(envp);
 	argv = ft_split(arg, ' ');
 	if (!argv)
 		ft_exit_message("Failed to parse arguments");
-	full_path = ft_test_paths(argv[0], envp, &path_found);
+	full_path = ft_test_paths(argv[0], envp);
 	if (!full_path)
 	{
 		ft_free_str_arr(argv);
-		if (!path_found && envp)
+		if (!path_found && !envp)
 			exit(ft_command_error(arg));
 		ft_command_not_found(arg, envp);
 	}
