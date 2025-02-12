@@ -44,6 +44,7 @@ static void	ft_wait(int commands, pid_t last_pid)
 	pid_t	current_pid;
 
 	close(STDIN_FILENO);
+	close(STDOUT_FILENO);
 	while (commands-- > 0)
 	{
 		current_pid = wait(&status_code);
