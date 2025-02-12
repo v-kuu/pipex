@@ -28,7 +28,7 @@ void	ft_first_cmd(char *arg, char **envp, char *infile, int heredoc)
 		ft_exit_pipes("Fork failure", pipe_fd);
 	else if (pid == 0)
 	{
-		fd = ft_open_file(infile, heredoc);
+		fd = ft_open_file(infile, heredoc, pipe_fd);
 		if (fd == -1)
 		{
 			ft_close_fds(pipe_fd);
@@ -77,7 +77,7 @@ pid_t	ft_final_cmd(char *arg, char **envp, char *outfile, int heredoc)
 		ft_exit_message("Fork failure");
 	else if (pid == 0)
 	{
-		fd = ft_open_file(outfile, heredoc + 2);
+		fd = ft_open_file(outfile, heredoc + 2, NULL);
 		if (fd == -1)
 			ft_file_error(outfile);
 		dup2(fd, STDOUT_FILENO);

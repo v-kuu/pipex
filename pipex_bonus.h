@@ -25,7 +25,7 @@ enum	e_mode
 	APPEND
 };
 
-int		ft_open_file(char *input, int mode);
+int		ft_open_file(char *input, int mode, int pipe_fd[2]);
 int		ft_find_path(char **envp);
 char	*ft_test_paths(char *name, char **envp);
 void	ft_first_cmd(char *arg, char **envp, char *infile, int heredoc);

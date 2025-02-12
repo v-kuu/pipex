@@ -13,15 +13,15 @@
 #include "pipex_bonus.h"
 
 static int	ft_open(char *file, int mode);
-static int	ft_read_heredoc(char *delim);
+static int	ft_read_heredoc(char *delim, int pipe_fd[2]);
 static void	ft_read_lines(char *delim);
 
-int	ft_open_file(char *input, int mode)
+int	ft_open_file(char *input, int mode, int pipe_fd[2])
 {
 	int	file;
 
 	if (mode == HEREDOC)
-		file = ft_read_heredoc(input);
+		file = ft_read_heredoc(input, pipe_fd);
 	else if (mode == READ)
 		file = ft_open(input, READ);
 	else if (mode == TRUNC)
@@ -45,7 +45,7 @@ static int	ft_open(char *file, int mode)
 		return (-1);
 }
 
-static int	ft_read_heredoc(char *delim)
+static int	ft_read_heredoc(char *delim, int pipe_fd[2])
 {
 	int		heredoc[2];
 	pid_t	pid;
@@ -61,6 +61,8 @@ static int	ft_read_heredoc(char *delim)
 	}
 	if (pid == 0)
 	{
+		close(pipe_fd[0]);
+		close(pipe_fd[1]);
 		close(heredoc[0]);
 		dup2(heredoc[1], STDOUT_FILENO);
 		close(heredoc[1]);
