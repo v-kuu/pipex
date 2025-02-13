@@ -32,6 +32,8 @@ char	*ft_test_paths(char *name, char **envp)
 	while (paths[++index])
 	{
 		final = ft_glue_path(paths[index], name);
+		if (!final)
+			return (ft_free_str_arr(paths));
 		if (access(final, F_OK) == 0)
 			break ;
 		ft_free((void **)&final);
