@@ -18,7 +18,7 @@ int	main(int argc, char **argv, char **envp)
 {
 	pid_t	final_cmd;
 
-	if (argc < 5)
+	if (argc != 5)
 	{
 		ft_putstr_fd(
 			"Usage: ./pipex <infile> <cmd1> <cmd2> outfile>\n", 2);
