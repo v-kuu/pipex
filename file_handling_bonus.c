@@ -78,22 +78,3 @@ static void	ft_read_lines(char *delim)
 		ft_free((void **)&line);
 	}
 }
-
-void	ft_file_error(char *filename)
-{
-	char	*full;
-	int		file_len;
-
-	file_len = ft_strlen(filename);
-	full = ft_calloc((file_len + 8), sizeof(char));
-	if (!full)
-	{
-		perror("Failed to print error message");
-		exit(EXIT_FAILURE);
-	}
-	ft_strlcat(full, "pipex: ", (file_len + 8));
-	ft_strlcat(full, filename, (file_len + 8));
-	perror(full);
-	ft_free((void **)&full);
-	exit(EXIT_FAILURE);
-}

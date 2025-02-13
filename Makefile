@@ -26,12 +26,14 @@ LIBFT			= libft/libft.a
 SOURCES			= pipex.c \
 				  file_handling.c \
 				  command_handling.c \
-				  execution.c
+				  execution.c \
+				  error.c
 
 SOURCES_BONUS	= pipex_bonus.c \
 				  file_handling_bonus.c \
 				  command_handling_bonus.c \
-				  execution_bonus.c
+				  execution_bonus.c \
+				  error_bonus.c
 
 HEADERS			= pipex.h
 

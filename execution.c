@@ -6,7 +6,7 @@
 /*   By: vkuusela <vkuusela@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/06 14:28:07 by vkuusela          #+#    #+#             */
-/*   Updated: 2025/02/06 14:35:39 by vkuusela         ###   ########.fr       */
+/*   Updated: 2025/02/13 15:27:58 by vkuusela         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,6 +76,7 @@ static void	ft_exec(char *arg, char **envp)
 	if (!argv)
 		ft_exit_message("Failed to parse arguments");
 	full_path = ft_test_paths(argv[0], envp);
+	ft_is_command_directory(full_path, argv);
 	if (!full_path)
 	{
 		ft_free_str_arr(argv);

@@ -99,6 +99,7 @@ static void	ft_exec(char *arg, char **envp)
 	if (!argv)
 		ft_exit_message("Failed to parse arguments");
 	full_path = ft_test_paths(argv[0], envp);
+	ft_is_command_directory(full_path, argv);
 	if (!full_path)
 	{
 		ft_free_str_arr(argv);
