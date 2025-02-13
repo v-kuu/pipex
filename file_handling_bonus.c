@@ -12,35 +12,19 @@
 
 #include "pipex_bonus.h"
 
-static int	ft_open(char *file, int mode);
 static int	ft_read_heredoc(char *delim, int pipe_fd[2]);
 static void	ft_read_lines(char *delim);
 
 int	ft_open_file(char *input, int mode, int pipe_fd[2])
 {
-	int	file;
-
 	if (mode == HEREDOC)
-		file = ft_read_heredoc(input, pipe_fd);
+		return (ft_read_heredoc(input, pipe_fd));
 	else if (mode == READ)
-		file = ft_open(input, READ);
+		return (open(input, O_RDONLY));
 	else if (mode == TRUNC)
-		file = ft_open(input, TRUNC);
+		return (open(input, O_WRONLY | O_CREAT | O_TRUNC, 0644));
 	else if (mode == APPEND)
-		file = ft_open(input, APPEND);
-	else
-		return (-1);
-	return (file);
-}
-
-static int	ft_open(char *file, int mode)
-{
-	if (mode == READ)
-		return (open(file, O_RDONLY));
-	else if (mode == TRUNC)
-		return (open(file, O_WRONLY | O_CREAT | O_TRUNC, 0644));
-	else if (mode == APPEND)
-		return (open(file, O_WRONLY | O_CREAT | O_APPEND, 0644));
+		return (open(input, O_WRONLY | O_CREAT | O_APPEND, 0644));
 	else
 		return (-1);
 }
