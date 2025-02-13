@@ -50,11 +50,11 @@ OBJECTS_BONUS	= $(SOURCES_BONUS:.c=.o)
 
 all: 			$(NAME)
 
-$(NAME):		$(LIBFT) $(OBJECTS)
+$(NAME):		$(LIBFT) $(OBJECTS) $(HEADERS)
 	@echo "Compiling pipex..."
 	@$(CC) $(CFLAGS) $(OBJECTS) $(LIBFT) -o $(NAME)
 
-bonus:			$(LIBFT) $(OBJECTS_BONUS)
+bonus:			$(LIBFT) $(OBJECTS_BONUS) $(HEADERS_BONUS)
 	@echo "Compiling bonuses..."
 	@$(CC) $(CFLAGS) $(OBJECTS_BONUS) $(LIBFT) -o $(NAME)
 
