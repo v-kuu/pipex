@@ -67,16 +67,19 @@ void	ft_is_command_directory(char *command, char **argv)
 {
 	char	*full;
 	int		cmd_len;
+	int		fd;
 
 	if (!command || !argv)
 		return ;
-	if (open(command, O_DIRECTORY) == -1)
+	fd = open(command, O_DIRECTORY);
+	if (fd == -1)
 		return ;
+	close(fd);
 	ft_free_str_arr(argv);
 	cmd_len = ft_strlen(command);
 	full = ft_calloc(25 + cmd_len, sizeof(char));
 	if (!full)
-		ft_exit_message("Failed to pring error message");
+		ft_exit_message("Failed to print error message");
 	ft_strlcat(full, "pipex: ", (cmd_len + 25));
 	ft_strlcat(full, command, (cmd_len + 25));
 	ft_strlcat(full, ": Is a directory\n", (cmd_len + 25));
