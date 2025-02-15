@@ -56,6 +56,8 @@ static char	**ft_list_paths(char **envp)
 	if (!(envp[index]))
 		return (NULL);
 	paths = ft_split(&envp[index][5], ':');
+	if (paths && !(*paths))
+		return (ft_free((void **)&paths));
 	return (paths);
 }
 
