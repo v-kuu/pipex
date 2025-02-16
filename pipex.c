@@ -6,7 +6,7 @@
 /*   By: vkuusela <vkuusela@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/22 14:20:32 by vkuusela          #+#    #+#             */
-/*   Updated: 2025/02/13 15:11:41 by vkuusela         ###   ########.fr       */
+/*   Updated: 2025/02/16 14:40:22 by vkuusela         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,17 +16,25 @@ static void	ft_wait(int commands, pid_t last_pid);
 
 int	main(int argc, char **argv, char **envp)
 {
+	int		index;
+	int		heredoc;
 	pid_t	final_cmd;
 
-	if (argc != 5)
+	if (argc < 5 || (ft_strncmp(argv[1], "here_doc", 8) == 0 && argc < 6))
 	{
-		ft_putstr_fd(
-			"Usage: ./pipex <infile> <cmd1> <cmd2> outfile>\n", 2);
+		ft_putendl_fd(
+			"Usage: ./pipex <infile/here_doc EOF> <cmd1>...<cmdn> outfile>", 2);
 		exit(EXIT_FAILURE);
 	}
-	ft_first_cmd(argv[2], envp, argv[1]);
-	final_cmd = ft_final_cmd(argv[3], envp, argv[4]);
-	ft_wait(2, final_cmd);
+	heredoc = 0;
+	if (ft_strncmp(argv[1], "here_doc", 8) == 0)
+		heredoc = 1;
+	index = 2 + heredoc;
+	ft_first_cmd(argv[index++], envp, argv[1 + heredoc], heredoc);
+	while (index < argc - 2)
+		ft_mid_cmd(argv[index++], envp);
+	final_cmd = ft_final_cmd(argv[argc - 2], envp, argv[argc - 1], heredoc);
+	ft_wait((argc - 3 - heredoc), final_cmd);
 }
 
 static void	ft_wait(int commands, pid_t last_pid)

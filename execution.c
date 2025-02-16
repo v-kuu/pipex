@@ -6,7 +6,7 @@
 /*   By: vkuusela <vkuusela@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/06 14:28:07 by vkuusela          #+#    #+#             */
-/*   Updated: 2025/02/13 15:27:58 by vkuusela         ###   ########.fr       */
+/*   Updated: 2025/02/16 14:41:06 by vkuusela         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 static void	ft_exec(char *arg, char **envp);
 static void	ft_close_fds(int fildes[2]);
 
-void	ft_first_cmd(char *arg, char **envp, char *infile)
+void	ft_first_cmd(char *arg, char **envp, char *infile, int heredoc)
 {
 	pid_t	pid;
 	int		pipe_fd[2];
@@ -28,7 +28,7 @@ void	ft_first_cmd(char *arg, char **envp, char *infile)
 		ft_exit_pipes("Fork failure", pipe_fd);
 	else if (pid == 0)
 	{
-		fd = ft_open_file(infile, 0);
+		fd = ft_open_file(infile, heredoc, pipe_fd);
 		if (fd == -1)
 		{
 			ft_close_fds(pipe_fd);
@@ -44,7 +44,30 @@ void	ft_first_cmd(char *arg, char **envp, char *infile)
 	ft_close_fds(pipe_fd);
 }
 
-pid_t	ft_final_cmd(char *arg, char **envp, char *outfile)
+void	ft_mid_cmd(char *arg, char **envp)
+{
+	pid_t	pid;
+	int		pipe_fd[2];
+
+	if (pipe(pipe_fd) == -1)
+		ft_exit_message("Pipe failure");
+	pid = fork();
+	if (pid == -1)
+		ft_exit_pipes("Fork failure", pipe_fd);
+	else if (pid == 0)
+	{
+		dup2(pipe_fd[1], STDOUT_FILENO);
+		ft_close_fds(pipe_fd);
+		ft_exec(arg, envp);
+	}
+	else
+	{
+		dup2(pipe_fd[0], STDIN_FILENO);
+		ft_close_fds(pipe_fd);
+	}
+}
+
+pid_t	ft_final_cmd(char *arg, char **envp, char *outfile, int heredoc)
 {
 	pid_t	pid;
 	int		fd;
@@ -54,7 +77,7 @@ pid_t	ft_final_cmd(char *arg, char **envp, char *outfile)
 		ft_exit_message("Fork failure");
 	else if (pid == 0)
 	{
-		fd = ft_open_file(outfile, 1);
+		fd = ft_open_file(outfile, heredoc + 2, NULL);
 		if (fd == -1)
 			ft_file_error(outfile);
 		dup2(fd, STDOUT_FILENO);

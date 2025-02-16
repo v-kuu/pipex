@@ -6,7 +6,7 @@
 /*   By: vkuusela <vkuusela@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/29 12:03:00 by vkuusela          #+#    #+#             */
-/*   Updated: 2025/02/10 13:55:49 by vkuusela         ###   ########.fr       */
+/*   Updated: 2025/02/16 14:40:39 by vkuusela         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,7 +86,7 @@ void	ft_command_not_found(char *arg, char **envp)
 
 	argv[0] = "/usr/lib/command-not-found";
 	argv[1] = arg;
-	argv[2] = 0;
+	argv[2] = NULL;
 	execve(argv[0], argv, envp);
 	perror("pipex:");
 	exit(EXIT_FAILURE);

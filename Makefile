@@ -29,26 +29,14 @@ SOURCES			= pipex.c \
 				  execution.c \
 				  error.c
 
-SOURCES_BONUS	= pipex_bonus.c \
-				  file_handling_bonus.c \
-				  command_handling_bonus.c \
-				  execution_bonus.c \
-				  error_bonus.c
-
 HEADERS			= pipex.h
 
-HEADERS_BONUS	= pipex_bonus.h
-
 OBJECTS			= $(SOURCES:.c=.o)
-
-OBJECTS_BONUS	= $(SOURCES_BONUS:.c=.o)
 
 
 %.o:			%.c $(HEADERS)
 	@$(CC) $(CFLAGS) -c $< -o $@
 
-%.o:			%.c $(HEADERS_BONUS)
-	@$(CC) $(CFLAGS) -c $< -o $@
 
 all: 			$(NAME)
 
@@ -56,9 +44,6 @@ $(NAME):		$(LIBFT) $(OBJECTS) $(HEADERS)
 	@echo "Compiling pipex..."
 	@$(CC) $(CFLAGS) $(OBJECTS) $(LIBFT) -o $(NAME)
 
-bonus:			$(LIBFT) $(OBJECTS_BONUS) $(HEADERS_BONUS)
-	@echo "Compiling bonuses..."
-	@$(CC) $(CFLAGS) $(OBJECTS_BONUS) $(LIBFT) -o $(NAME)
 
 $(LIBFT):
 	@echo "Compiling libft..."
@@ -66,7 +51,7 @@ $(LIBFT):
 
 clean:
 	@echo "Cleaning objects..."
-	@$(RM) $(OBJECTS) $(OBJECTS_BONUS)
+	@$(RM) $(OBJECTS)
 	@(cd libft/ && make clean)
 
 fclean:			clean
@@ -86,6 +71,6 @@ gprof:			CFLAGS += -g -pg
 gprof:			re
 
 norminette:
-	norminette $(SOURCES) $(SOURCES_BONUS) $(HEADERS) $(HEADERS_BONUS) ./libft
+	norminette $(SOURCES) $(HEADERS) ./libft
 
-.PHONY:			all clean fclean re fsanitize debug gprof norminette bonus
+.PHONY:			all clean fclean re fsanitize debug gprof norminette
