@@ -13,52 +13,32 @@
 #include "pipex.h"
 
 static char	*ft_glue_path(char *path, char *name);
-static char	**ft_list_paths(char **envp);
 
-char	*ft_test_paths(char *name, char **envp)
+char	*ft_test_paths(char *name, char *path)
 {
 	char	*final;
-	char	**paths;
+	char	**path_arr;
 	int		index;
 
 	if (!name)
 		return (NULL);
 	if (ft_strchr(name, '/'))
 		return (ft_strdup(name));
-	paths = ft_list_paths(envp);
-	if (!paths)
+	path_arr = ft_split(path, ':');
+	if (!path_arr)
 		return (NULL);
 	index = -1;
-	while (paths[++index])
+	while (path_arr[++index])
 	{
-		final = ft_glue_path(paths[index], name);
+		final = ft_glue_path(path_arr[index], name);
 		if (!final)
-			return (ft_free_str_arr(paths));
+			return (ft_free_str_arr(path_arr));
 		if (access(final, F_OK) == 0)
 			break ;
 		ft_free((void **)&final);
 	}
-	ft_free_str_arr(paths);
+	ft_free_str_arr(path_arr);
 	return (final);
-}
-
-static char	**ft_list_paths(char **envp)
-{
-	int		index;
-	char	**paths;
-
-	if (!envp)
-		return (NULL);
-	index = -1;
-	while (envp[++index])
-		if (ft_strncmp(envp[index], "PATH=", 5) == 0)
-			break ;
-	if (!(envp[index]))
-		return (NULL);
-	paths = ft_split(&envp[index][5], ':');
-	if (paths && !(*paths))
-		return (ft_free((void **)&paths));
-	return (paths);
 }
 
 static char	*ft_glue_path(char *path, char *name)
@@ -80,7 +60,7 @@ static char	*ft_glue_path(char *path, char *name)
 	return (full);
 }
 
-void	ft_command_not_found(char *arg, char **envp)
+void	ft_command_not_found(char *arg, char **command, char **envp)
 {
 	char	*argv[3];
 
@@ -89,25 +69,26 @@ void	ft_command_not_found(char *arg, char **envp)
 	argv[2] = NULL;
 	execve(argv[0], argv, envp);
 	perror("pipex:");
+	ft_free_str_arr(command);
 	exit(EXIT_FAILURE);
 }
 
-int	ft_find_path(char **envp)
+char	*ft_find_path(char **envp)
 {
-	int	index;
-	int	path_found;
+	int		index;
+	char	*path;
 
 	if (!envp)
-		return (0);
-	path_found = 0;
+		return (NULL);
+	path = NULL;
 	index = -1;
 	while (envp[++index])
 	{
 		if (ft_strncmp(envp[index], "PATH=", 5) == 0)
 		{
-			path_found = 1;
+			path = &envp[index][5];
 			break ;
 		}
 	}
-	return (path_found);
+	return (path);
 }

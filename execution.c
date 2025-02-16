@@ -91,28 +91,26 @@ static void	ft_exec(char *arg, char **envp)
 {
 	char	*full_path;
 	char	**argv;
-	int		exit_code;
-	int		path_found;
+	char	*path;
 
-	path_found = ft_find_path(envp);
+	path = ft_find_path(envp);
 	argv = ft_split(arg, ' ');
 	if (!argv)
 		ft_exit_message("Failed to parse arguments");
-	full_path = ft_test_paths(argv[0], envp);
+	if (!path)
+	{
+		ft_is_command_directory(ft_strdup(argv[0]), argv);
+		execve(argv[0], argv, envp);
+		ft_command_error(argv);
+	}
+	full_path = ft_test_paths(argv[0], path);
 	ft_is_command_directory(full_path, argv);
 	if (!full_path)
-	{
-		ft_free_str_arr(argv);
-		if (!path_found)
-			exit(ft_command_error(arg));
-		ft_command_not_found(arg, envp);
-	}
+		ft_command_not_found(arg, argv, envp);
 	ft_free((void **)&(argv[0]));
 	argv[0] = full_path;
 	execve(full_path, argv, envp);
-	exit_code = ft_command_error(full_path);
-	ft_free_str_arr(argv);
-	exit(exit_code);
+	ft_command_error(argv);
 }
 
 static void	ft_close_fds(int fildes[2])
